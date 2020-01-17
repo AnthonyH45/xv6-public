@@ -13,10 +13,13 @@ sys_fork(void)
   return fork();
 }
 
+// we rewrite sys_exit to use 
+// the new exit(), that is
+// exit(int status) instead
 int
-sys_exit(void)
+sys_exit(int status)
 {
-  exit();
+  exit(status);
   return 0;  // not reached
 }
 

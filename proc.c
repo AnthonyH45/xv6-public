@@ -229,6 +229,7 @@ exit(int status)
 {
   struct proc *curproc = myproc();
   struct proc *p;
+  curproc->status = status;
   int fd;
 
   if(curproc == initproc)
@@ -270,8 +271,17 @@ exit(int status)
 // Wait for a child process to exit and return its pid.
 // Return -1 if this process has no children.
 int
-wait(void)
+wait(int* status)
 {
+  // if the status passed in is NULL,
+  // we want to declare it so we
+  // can write to it
+  if (status == 0) {
+    //status = malloc(sizeof *i);
+    int to_ret = 0;
+    status = &to_ret;
+  }
+
   struct proc *p;
   int havekids, pid;
   struct proc *curproc = myproc();
@@ -296,6 +306,12 @@ wait(void)
         p->killed = 0;
         p->state = UNUSED;
         release(&ptable.lock);
+        // set the passed in status
+        // to be = to the child's
+        // then we return the child
+        // pid that we terminated
+        *status = p->status;
+        p->status = 0;
         return pid;
       }
     }

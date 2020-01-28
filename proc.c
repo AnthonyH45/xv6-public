@@ -327,6 +327,69 @@ wait(int* status)
   }
 }
 
+int
+waitpid(int target_pid, int* status, int options)
+{
+  // if the status passed in is NULL,
+  // we want to declare it so we
+  // can write to it
+  if (status == 0) {
+    //status = malloc(sizeof *i);
+    int to_ret = 0;
+    status = &to_ret;
+  }
+
+  struct proc *p;
+  int to_ret_pid = 0;
+
+  struct proc *curproc = myproc();
+  // if the curproc is the one to kill
+  if (curproc->pid == target_pid)
+  {
+      // kill curproc's children here
+      to_ret_pid = curproc->pid;
+      kfree(curproc->kstatck);
+      curproc->kstack = 0;
+      freevm(curproc->pgdir);
+      curproc->pid = 0;
+      curproc->parent = 0;
+      curproc->name[0] = 0;
+      curproc->killed = 0;
+      curproc->state = UNUSED;
+      release(&ptable.lock);
+      *status = curproc->status;
+      curproc->status;
+      curproc->status = 0;
+      return to_ret_pid
+  }
+  
+  // find the process with the target pid
+  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) 
+  {
+    if (p->pid == target_pid)
+    {
+      to_ret_pid = p->pid;
+      kfree(p->kstack);
+      p->kstack = 0;
+      freevm(p->pgdir);
+      p->pid = 0;
+      p->parent = 0;
+      p->name[0] = 0;
+      p->killed = 0;
+      p->state = UNUSED
+      release(&ptable.lock);
+      *status = p->status;
+      p->status = 0;
+      return to_ret_pid;
+    }
+  }
+
+  if 
+
+}
+
+
+
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.

@@ -365,7 +365,7 @@ waitpid(int target_pid, int* status, int options)
       return to_ret_pid;
   }
   
-acquire(&ptable.lock);
+  acquire(&ptable.lock);
   for(;;){
     // Scan through table looking for exited children.
     havekids = 0;
@@ -403,37 +403,7 @@ acquire(&ptable.lock);
 
     // Wait for children to exit.  (See wakeup1 call in proc_exit.)
     sleep(curproc, &ptable.lock);  //DOC: wait-sleep
-  } 
-  /*acquire(&ptable.lock);
-  // find the process with the target pid
-  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) 
-  {
-    if (p->pid != target_pid) {
-      continue;
-    }
-    if (p->state == ZOMBIE)
-    {
-      to_ret_pid = p->pid;
-      kfree(p->kstack);
-      p->kstack = 0;
-      freevm(p->pgdir);
-      p->pid = 0;
-      p->parent = 0;
-      p->name[0] = 0;
-      p->killed = 0;
-      p->state = UNUSED;
-      release(&ptable.lock);
-      *status = p->status;
-      p->status = 0;
-      if(status) {
-	*status = p->status;
-      }
-      return to_ret_pid;
-    }
-  }*/
-
-  return to_ret_pid;
-
+  }
 }
 
 

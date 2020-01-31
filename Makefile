@@ -180,7 +180,6 @@ UPROGS=\
 	_stressfs\
 	_usertests\
 	_wc\
-	_lab1\
 	_zombie\
 	_lab1\
 

@@ -345,7 +345,7 @@ waitpid(int target_pid, int* status, int options)
   int to_ret_pid = 0;
   int havekids = 0;
 
-  //struct proc *curproc = myproc();
+  struct proc *curproc = myproc();
   // if the curproc is the one to kill
   /*if (curproc->pid == target_pid)
   {

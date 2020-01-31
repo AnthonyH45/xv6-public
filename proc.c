@@ -262,6 +262,8 @@ exit(int status)
     }
   }
 
+  //int waitpid(int, int*, int);
+
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
   sched();
@@ -333,17 +335,17 @@ waitpid(int target_pid, int* status, int options)
   // if the status passed in is NULL,
   // we want to declare it so we
   // can write to it
-  /* if (status == 0) {
+  if (status == 0) {
     //status = malloc(sizeof *i);
     int to_ret = 0;
     status = &to_ret;
   }
-*/
 
   struct proc *p;
   int to_ret_pid = 0;
+  int havekids = 0;
 
-  /*struct proc *curproc = myproc();
+  struct proc *curproc = myproc();
   // if the curproc is the one to kill
   if (curproc->pid == target_pid)
   {
@@ -361,8 +363,48 @@ waitpid(int target_pid, int* status, int options)
       *status = curproc->status;
       curproc->status = 0;
       return to_ret_pid;
-  }*/
+  }
   
+acquire(&ptable.lock);
+  for(;;){
+    // Scan through table looking for exited children.
+    havekids = 0;
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->pid != target_pid)
+        continue;
+      havekids = 1;
+      if(p->state == ZOMBIE){
+        // Found one.
+        to_ret_pid = p->pid;
+        kfree(p->kstack);
+        p->kstack = 0;
+        freevm(p->pgdir);
+        p->pid = 0;
+        p->parent = 0;
+        p->name[0] = 0;
+        p->killed = 0;
+        p->state = UNUSED;
+        release(&ptable.lock);
+        // set the passed in status
+        // to be = to the child's
+        // then we return the child
+        // pid that we terminated
+        *status = p->status;
+        p->status = 0;
+        return to_ret_pid;
+      }
+    }
+
+    // No point waiting if we don't have any children.
+    if(!havekids || curproc->killed){
+      release(&ptable.lock);
+      return -1;
+    }
+
+    // Wait for children to exit.  (See wakeup1 call in proc_exit.)
+    sleep(curproc, &ptable.lock);  //DOC: wait-sleep
+  } 
+  /*acquire(&ptable.lock);
   // find the process with the target pid
   for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) 
   {
@@ -388,7 +430,7 @@ waitpid(int target_pid, int* status, int options)
       }
       return to_ret_pid;
     }
-  }
+  }*/
 
   return to_ret_pid;
 

@@ -1,1 +1,1 @@
-int sys_waitpid(int,int*,int);
+int sys_waitpid(void);

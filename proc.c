@@ -348,7 +348,7 @@ waitpid(int target_pid, int* status, int options)
   {
       // kill curproc's children here
       to_ret_pid = curproc->pid;
-      kfree(curproc->kstatck);
+      kfree(curproc->kstack);
       curproc->kstack = 0;
       freevm(curproc->pgdir);
       curproc->pid = 0;
@@ -358,9 +358,8 @@ waitpid(int target_pid, int* status, int options)
       curproc->state = UNUSED;
       release(&ptable.lock);
       *status = curproc->status;
-      curproc->status;
       curproc->status = 0;
-      return to_ret_pid
+      return to_ret_pid;
   }
   
   // find the process with the target pid
@@ -376,7 +375,7 @@ waitpid(int target_pid, int* status, int options)
       p->parent = 0;
       p->name[0] = 0;
       p->killed = 0;
-      p->state = UNUSED
+      p->state = UNUSED;
       release(&ptable.lock);
       *status = p->status;
       p->status = 0;
@@ -384,7 +383,7 @@ waitpid(int target_pid, int* status, int options)
     }
   }
 
-  if 
+  return to_ret_pid;
 
 }
 

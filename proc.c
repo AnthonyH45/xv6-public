@@ -345,9 +345,9 @@ waitpid(int target_pid, int* status, int options)
   int to_ret_pid = 0;
   int havekids = 0;
 
-  struct proc *curproc = myproc();
+  //struct proc *curproc = myproc();
   // if the curproc is the one to kill
-  if (curproc->pid == target_pid)
+  /*if (curproc->pid == target_pid)
   {
       // kill curproc's children here
       to_ret_pid = curproc->pid;
@@ -363,7 +363,7 @@ waitpid(int target_pid, int* status, int options)
       *status = curproc->status;
       curproc->status = 0;
       return to_ret_pid;
-  }
+  }*/
   
   acquire(&ptable.lock);
   for(;;){

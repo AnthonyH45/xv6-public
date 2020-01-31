@@ -333,11 +333,12 @@ waitpid(int target_pid, int* status, int options)
   // if the status passed in is NULL,
   // we want to declare it so we
   // can write to it
-  if (status == 0) {
+  /* if (status == 0) {
     //status = malloc(sizeof *i);
     int to_ret = 0;
     status = &to_ret;
   }
+*/
 
   struct proc *p;
   int to_ret_pid = 0;
@@ -368,7 +369,7 @@ waitpid(int target_pid, int* status, int options)
     if (p->pid != target_pid) {
       continue;
     }
-    if (p->pid == target_pid)
+    if (p->state == ZOMBIE)
     {
       to_ret_pid = p->pid;
       kfree(p->kstack);
@@ -382,6 +383,9 @@ waitpid(int target_pid, int* status, int options)
       release(&ptable.lock);
       *status = p->status;
       p->status = 0;
+      if(status) {
+	*status = p->status;
+      }
       return to_ret_pid;
     }
   }

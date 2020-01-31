@@ -365,6 +365,9 @@ waitpid(int target_pid, int* status, int options)
   // find the process with the target pid
   for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) 
   {
+    if (p->pid != target_pid) {
+      continue;
+    }
     if (p->pid == target_pid)
     {
       to_ret_pid = p->pid;

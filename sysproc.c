@@ -96,9 +96,11 @@ sys_uptime(void)
 int
 sys_waitpid(void)
 {
-  int pid = myproc()->pid;
+  //int pid = myproc()->pid;
+  int pid = 0;
   int* status = 0;
-  //if (orgptr(1, (void*), &status, sizeof(*status)) < 0)
-  //  return -1;
+  argint(0, &pid);
+  if (argptr(1, (void*)&status, sizeof(*status)) < 0)
+    return -1;
   return waitpid(pid, status, 0);
 }

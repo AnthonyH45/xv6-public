@@ -342,7 +342,7 @@ waitpid(int target_pid, int* status, int options)
   struct proc *p;
   int to_ret_pid = 0;
 
-  struct proc *curproc = myproc();
+  /*struct proc *curproc = myproc();
   // if the curproc is the one to kill
   if (curproc->pid == target_pid)
   {
@@ -360,7 +360,7 @@ waitpid(int target_pid, int* status, int options)
       *status = curproc->status;
       curproc->status = 0;
       return to_ret_pid;
-  }
+  }*/
   
   // find the process with the target pid
   for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) 

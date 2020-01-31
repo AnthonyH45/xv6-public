@@ -76,7 +76,7 @@ int waitPid(void){
        
       sleep(5);
       printf(1, "\n This is the parent: Now waiting for child with PID# %d\n",pid_a[3]);
-      //ret_pid = waitpid(pid_a[3], &exit_status, 0);
+      ret_pid = waitpid(pid_a[3], &exit_status, 0);
       printf(1, "\n This is the partent: Child# %d has exited with status %d\n",ret_pid, exit_status);
       sleep(5);
       printf(1, "\n This is the parent: Now waiting for child with PID# %d\n",pid_a[1]);

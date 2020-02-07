@@ -631,7 +631,9 @@ procdump(void)
 }
 
 int
-setpriority(int n)
+setpriority(int to_set)
 {
-  return 0;
+  struct proc *curproc = myproc();
+  curproc->priority = to_set;
+  return curproc->priority;
 }

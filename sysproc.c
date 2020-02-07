@@ -13,17 +13,20 @@ sys_fork(void)
   return fork();
 }
 
+// we rewrite sys_exit to use 
+// the new exit(), that is
+// exit(int status) instead
 int
-sys_exit(void)
+sys_exit(int status)
 {
-  exit();
+  exit(status);
   return 0;  // not reached
 }
 
 int
 sys_wait(void)
 {
-  return wait();
+  return wait(0);
 }
 
 int
@@ -88,4 +91,16 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
+}
+
+int
+sys_waitpid(void)
+{
+  //int pid = myproc()->pid;
+  int pid;
+  int* status;
+  argint(0, &pid);
+  if (argptr(1, (void*)&status, sizeof(*status)) < 0)
+    return -1;
+  return waitpid(pid, status, 0);
 }

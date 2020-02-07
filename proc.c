@@ -629,3 +629,9 @@ procdump(void)
     cprintf("\n");
   }
 }
+
+int
+setpriority(int n)
+{
+  return 0;
+}

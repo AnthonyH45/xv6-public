@@ -432,14 +432,18 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    
+
     // Find process with highest priority
+    // [10,31,11,9,8,0,1,4,10,10]
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if (min_priority > p->priority) {
         min_priority = p->priority; 
       }
     }
 
+    // after finding min we then find that proc in the table
+    // and then we switch to that proc
+    // [10,10,11,9,8,0,1,4,10,10]
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;

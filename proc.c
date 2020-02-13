@@ -424,9 +424,9 @@ scheduler(void)
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
-  int min_priority = 31;
-  
+
   for(;;){
+    int min_priority = 31;
     // Enable interrupts on this processor.
     sti();
 
@@ -436,15 +436,18 @@ scheduler(void)
     // Find process with highest priority
     // [10,31,11,9,8,0,1,4,10,10]
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if (min_priority > p->priority) {
+      if ( (min_priority > p->priority) && (p->state == RUNNABLE) ) {
         min_priority = p->priority; 
       }
     }
+        
 
     // after finding min we then find that proc in the table
     // and then we switch to that proc
     // [10,10,11,9,8,0,1,4,10,10]
+    //int min_priority = 32;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+
       if(p->state != RUNNABLE)
         continue;
       
@@ -467,7 +470,6 @@ scheduler(void)
       c->proc = 0;
     }
     release(&ptable.lock);
-
   }
 }
 

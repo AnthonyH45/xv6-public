@@ -30,7 +30,9 @@ int main(int argc, char *argv[])
     for (i = 0; i <  3; i++) {
 	pid = fork();
 	if (pid > 0 ) {
-		continue;}
+                //waitpid(pid, 0, 0);
+                continue;
+        }
 	else if ( pid == 0) {
 
 		setpriority(30-10*i);	
@@ -40,11 +42,8 @@ int main(int argc, char *argv[])
 		printf(1, "\n child# %d with priority %d has finished! \n",getpid(),30-10*i);		
 		exit(0);
         }
-        else {
-			printf(2," \n Error \n");
-			
-        }
-	}
+        else { printf(2," \n Error \n"); }
+    }
 
 	if(pid > 0) {
 		for (i = 0; i <  3; i++) {

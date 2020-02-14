@@ -6,6 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+//#include "user.h"
 
 struct {
   struct spinlock lock;
@@ -452,6 +453,10 @@ scheduler(void)
         continue;
       
       if(p->priority != min_priority){
+        if (p->priority > 0) {
+          p->priority--; 
+        }
+        cprintf("\nPROCESS# %d HAS AGED, new priority=%d!\n", p->pid, p->priority);
         continue;
       }
 

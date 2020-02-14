@@ -104,3 +104,12 @@ sys_waitpid(void)
     return -1;
   return waitpid(pid, status, 0);
 }
+
+int
+sys_setpriority(void)
+{
+  // set currproc->priority = to_set
+  int to_set = 10;
+  argint(0, &to_set);
+  return setpriority(to_set);
+}

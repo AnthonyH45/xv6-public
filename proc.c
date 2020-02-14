@@ -111,6 +111,8 @@ found:
   p->context = (struct context*)sp;
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
+  
+  p->priority = 10;
 
   return p;
 }
@@ -422,16 +424,36 @@ scheduler(void)
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
-  
+
   for(;;){
+    int min_priority = 31;
     // Enable interrupts on this processor.
     sti();
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
+
+    // Find process with highest priority
+    // [10,31,11,9,8,0,1,4,10,10]
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if ( (min_priority > p->priority) && (p->state == RUNNABLE) ) {
+        min_priority = p->priority; 
+      }
+    }
+        
+
+    // after finding min we then find that proc in the table
+    // and then we switch to that proc
+    // [10,10,11,9,8,0,1,4,10,10]
+    //int min_priority = 32;
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+
       if(p->state != RUNNABLE)
         continue;
+      
+      if(p->priority != min_priority){
+        continue;
+      }
 
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
@@ -448,7 +470,6 @@ scheduler(void)
       c->proc = 0;
     }
     release(&ptable.lock);
-
   }
 }
 
@@ -628,4 +649,12 @@ procdump(void)
     }
     cprintf("\n");
   }
+}
+
+int
+setpriority(int to_set)
+{
+  struct proc *curproc = myproc();
+  curproc->priority = to_set;
+  return curproc->priority;
 }

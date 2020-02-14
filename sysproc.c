@@ -109,7 +109,7 @@ int
 sys_setpriority(void)
 {
   // set currproc->priority = to_set
-  int to_set;
-  argint(10, &to_set);
+  int to_set = 10;
+  argint(0, &to_set);
   return setpriority(to_set);
 }
